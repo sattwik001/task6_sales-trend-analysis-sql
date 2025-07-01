@@ -1,0 +1,77 @@
+create database sales;
+use sales;
+
+
+ALTER TABLE task6
+ADD COLUMN total_amount DECIMAL(10,2);
+
+
+set sql_safe_updates = 0;
+
+UPDATE task6
+SET total_amount = price * quantity;
+
+
+SELECT customer_id, price, quantity, total_amount
+FROM task6
+LIMIT 10;
+
+
+
+-- monthly revenue with order
+SELECT 
+    YEAR(order_date) AS order_year,
+    MONTH(order_date) AS order_month,
+    SUM(total_amount) AS monthly_revenue,
+    COUNT(DISTINCT product_id) AS order_volume
+FROM task6
+GROUP BY order_year, order_month
+ORDER BY order_year, order_month;
+
+
+-- top_3 months revenue
+SELECT 
+    YEAR(order_date) AS order_year,
+    MONTH(order_date) AS order_month,
+    SUM(total_amount) AS revenue
+FROM task6
+GROUP BY order_year, order_month
+ORDER BY revenue DESC
+LIMIT 3;
+
+
+-- total revenue by category
+SELECT 
+    category_name,
+    SUM(total_amount) AS revenue
+FROM task6
+GROUP BY category_name
+ORDER BY revenue DESC;
+
+
+-- top orders payment method
+SELECT 
+    payment_method,
+    COUNT(*) AS total_orders
+FROM task6
+GROUP BY payment_method
+ORDER BY total_orders DESC;
+
+
+-- revenue by top 15city
+SELECT 
+    city,
+    SUM(total_amount) AS total_revenue
+FROM task6
+GROUP BY city
+ORDER BY total_revenue DESC
+LIMIT 15;
+
+
+-- daily sales trend
+SELECT 
+    order_date,
+    SUM(total_amount) AS daily_revenue
+FROM task6
+GROUP BY order_date
+ORDER BY order_date;
